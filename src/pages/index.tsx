@@ -1,6 +1,11 @@
 import React from "react";
-import { Typography } from "@mui/material";
 
 export default function Home() {
-  return <Typography variant="h1">Hello world</Typography>;
+  return (
+    <>
+      <h1>Hello World</h1>
+      <h2>lets make it</h2>
+      <p>This is the world of Amplify</p>
+    </>
+  );
 }

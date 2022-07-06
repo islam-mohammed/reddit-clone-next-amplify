@@ -1,30 +1,28 @@
-import * as React from "react";
-import Head from "next/head";
 import { AppProps } from "next/app";
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import { CacheProvider, EmotionCache } from "@emotion/react";
-import createEmotionCache from "../createEmotionCache";
-import theme from "../theme";
+import Head from "next/head";
+import "../styles/globals.scss";
+import * as React from "react";
+import { ThemeProvider } from "next-themes";
+import Layout from "../components/layout/Layout";
+import AuthProvider from "../context/AuthContext";
 
-const clientSideEmotionCache = createEmotionCache();
-
-interface MyAppProps extends AppProps {
-  emotionCache?: EmotionCache;
-}
-
-export default function MyApp(props: MyAppProps) {
-  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+export default function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <CacheProvider value={emotionCache}>
+    <>
       <Head>
-        <title>Reddit Clone</title>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=0"
+        />
       </Head>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Component {...pageProps} />
+
+      <ThemeProvider attribute="class">
+        <AuthProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </AuthProvider>
       </ThemeProvider>
-    </CacheProvider>
+    </>
   );
 }
