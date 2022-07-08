@@ -4,8 +4,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import FormInput from "../form/Input";
 import Alert from "../form/Alert";
-import { Amplify, Auth } from "aws-amplify";
-import awsConfig from "../../aws-exports";
+import { Auth } from "aws-amplify";
+import Link from "next/link";
 
 const schema = yup
   .object({
@@ -30,8 +30,6 @@ interface IFormInputs {
   emailAddress: string;
   password: string;
 }
-
-Amplify.configure({ ...awsConfig, ssr: true });
 
 interface IProps {
   onUserCreated: (userName: string) => void;
@@ -66,7 +64,14 @@ function CreateAccount({ onUserCreated }: IProps) {
 
   return (
     <>
-      <h1>Sigh Up</h1>
+      <div className="p-2 bg-slate-800">
+        <h3
+          className=" w-full text-center"
+          style={{ color: "#fff", margin: 0 }}
+        >
+          Create a new account
+        </h3>
+      </div>
       {signUpErrorMessage && (
         <Alert
           type="error"
@@ -109,12 +114,26 @@ function CreateAccount({ onUserCreated }: IProps) {
             register={register}
             error={errors.password && errors.password.message}
           />
+
           <button
-            className=" mt-8 w-full inline-block px-7 py-3 bg-gray-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+            className=" mt-8 w-full inline-block px-7 py-3 bg-gray-900 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-gray-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
             type="submit"
           >
             Sign up
           </button>
+          <div className="mt-2">
+            Have an account?{" "}
+            <Link href="/signin">
+              <a
+                style={{
+                  textDecoration: "none",
+                  color: "darkBlue",
+                }}
+              >
+                Sign in
+              </a>
+            </Link>
+          </div>
         </div>
       </form>
     </>

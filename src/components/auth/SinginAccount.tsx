@@ -3,13 +3,13 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import { Amplify, Auth } from "aws-amplify";
-import awsConfig from "../../aws-exports";
+import { Auth } from "aws-amplify";
 
 import { useRouter } from "next/router";
 import { useUser } from "../../context/AuthContext";
 import Alert from "../form/Alert";
 import FormInput from "../form/Input";
+import Link from "next/link";
 
 const schema = yup
   .object({
@@ -23,8 +23,6 @@ interface IFormInputs {
   password: string;
 }
 
-Amplify.configure({ ...awsConfig, ssr: true });
-
 interface IProps {
   onUserSignIn: (userName: string) => void;
 }
@@ -35,7 +33,10 @@ function SignInAccount({ onUserSignIn }: IProps) {
   if (user) router.push("/");
 
   const [signInErrorMessage, setSignInErrorMessage] = useState("");
-
+  const linkStyle = {
+    textDecoration: "none",
+    color: "darkBlue",
+  };
   const {
     handleSubmit,
     register,
@@ -47,14 +48,22 @@ function SignInAccount({ onUserSignIn }: IProps) {
       setSignInErrorMessage("");
       await Auth.signIn(data.userName, data.password);
     } catch (error) {
+      if (error.code === "UserNotConfirmedException")
+        onUserSignIn(data.userName);
       setSignInErrorMessage(error.message);
-      onUserSignIn(data.userName);
     }
   };
 
   return (
     <>
-      <h1>Sigh In</h1>
+      <div className="p-2 bg-slate-800">
+        <h3
+          className=" w-full text-center"
+          style={{ color: "#fff", margin: 0 }}
+        >
+          Sign In your account
+        </h3>
+      </div>
       {signInErrorMessage && (
         <Alert
           type="error"
@@ -72,23 +81,36 @@ function SignInAccount({ onUserSignIn }: IProps) {
           <FormInput
             type="text"
             name="userName"
-            label="Username"
+            label="Username *"
             register={register}
             error={errors.userName && errors.userName.message}
           />
           <FormInput
             type="password"
             name="password"
-            label="Password"
+            label="Password *"
             register={register}
             error={errors.password && errors.password.message}
           />
+          <div className="mt-2">
+            Forget your password?{" "}
+            <Link href="/reset-password">
+              <a style={linkStyle}>Reset your passwork</a>
+            </Link>
+          </div>
+
           <button
-            className=" mt-8 w-full inline-block px-7 py-3 bg-gray-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+            className=" mt-8 w-full inline-block px-7 py-3 bg-gray-900 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-gray-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
             type="submit"
           >
             Sign In
           </button>
+          <div className="mt-2">
+            Forget your password?{" "}
+            <Link href="/signup">
+              <a style={linkStyle}>Create new account</a>
+            </Link>
+          </div>
         </div>
       </form>
     </>

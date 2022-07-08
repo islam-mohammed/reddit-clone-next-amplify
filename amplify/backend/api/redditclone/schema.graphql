@@ -9,6 +9,11 @@ type Post
   ) {
   id: ID! @primaryKey
   title: String!
+  content: String!
+  image: S3Object
+  upVotes: Int
+  downVotes: Int
+  tags: [String]
   comments: [Comment] @hasMany
 }
 
@@ -16,12 +21,18 @@ type Comment
   @model
   @auth(
     rules: [
+      { allow: owner, operations: [create, update, delete, read] }
       { allow: public, operations: [read] }
       { allow: private, operations: [read] }
-      { allow: owner }
     ]
   ) {
   id: ID! @primaryKey
-  post: Post @belongsTo
   content: String!
+  post: Post @belongsTo
+}
+
+type S3Object {
+  bucket: String!
+  region: String!
+  key: String!
 }

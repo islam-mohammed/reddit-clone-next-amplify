@@ -11,10 +11,16 @@ export type AmplifyDependentResourcesAttributes = {
         }
     },
     "api": {
-        "redditcloneapi": {
+        "redditclone": {
             "GraphQLAPIKeyOutput": "string",
             "GraphQLAPIIdOutput": "string",
             "GraphQLAPIEndpointOutput": "string"
+        }
+    },
+    "storage": {
+        "redditassets": {
+            "BucketName": "string",
+            "Region": "string"
         }
     }
 }

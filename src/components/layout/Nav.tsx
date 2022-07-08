@@ -2,12 +2,18 @@ import Link from "next/link";
 import React from "react";
 import { useUser } from "../../context/AuthContext";
 import { Auth } from "aws-amplify";
+import { useRouter } from "next/router";
 
 type Props = {};
 
 export default function Nav({}: Props) {
-  const { user } = useUser();
-  const handleSignOut = () => Auth.signOut();
+  const { user, setUser } = useUser();
+  const router = useRouter();
+  const handleSignOut = () => {
+    Auth.signOut();
+    setUser(null);
+    router.push("/");
+  };
   return (
     <nav className="relative w-full flex flex-wrap items-center justify-between py-3 bg-gray-900 text-gray-200 shadow-lg navbar navbar-expand-lg navbar-light">
       <div className="container-fluid w-full flex flex-wrap items-center justify-between px-6">
@@ -47,11 +53,13 @@ export default function Nav({}: Props) {
           </Link>
           {/* <!-- Left links --> */}
           <ul className="navbar-nav flex flex-col pl-0 list-style-none mr-auto">
-            {/* <li className="nav-item p-2">
-              <a className="nav-link text-white" href="#">
-                Dashboard
-              </a>
-            </li> */}
+            {user && (
+              <li className="nav-item p-2">
+                <Link href="/post/create">
+                  <a role="button">Create New Post</a>
+                </Link>
+              </li>
+            )}
           </ul>
           {/* <!-- Left links --> */}
         </div>

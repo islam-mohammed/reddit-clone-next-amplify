@@ -7,6 +7,15 @@ export const getPost = /* GraphQL */ `
     getPost(id: $id) {
       id
       title
+      content
+      image {
+        bucket
+        region
+        key
+      }
+      upVotes
+      downVotes
+      tags
       comments {
         items {
           id
@@ -42,6 +51,15 @@ export const listPosts = /* GraphQL */ `
       items {
         id
         title
+        content
+        image {
+          bucket
+          region
+          key
+        }
+        upVotes
+        downVotes
+        tags
         comments {
           nextToken
         }
@@ -57,9 +75,19 @@ export const getComment = /* GraphQL */ `
   query GetComment($id: ID!) {
     getComment(id: $id) {
       id
+      content
       post {
         id
         title
+        content
+        image {
+          bucket
+          region
+          key
+        }
+        upVotes
+        downVotes
+        tags
         comments {
           nextToken
         }
@@ -67,7 +95,6 @@ export const getComment = /* GraphQL */ `
         updatedAt
         owner
       }
-      content
       createdAt
       updatedAt
       postCommentsId
@@ -92,14 +119,18 @@ export const listComments = /* GraphQL */ `
     ) {
       items {
         id
+        content
         post {
           id
           title
+          content
+          upVotes
+          downVotes
+          tags
           createdAt
           updatedAt
           owner
         }
-        content
         createdAt
         updatedAt
         postCommentsId

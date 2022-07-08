@@ -9,7 +9,7 @@ function Signup() {
   const router = useRouter();
   const onConfirmHandler = () => router.push("/");
   return (
-    <>
+    <div className="max-w-md m-auto bg-white p-10">
       {currentStep === "create" && (
         <CreateAccount
           onUserCreated={(e) => {
@@ -21,7 +21,7 @@ function Signup() {
       {currentStep === "confirm" && (
         <ConfirmAccount onConfirm={onConfirmHandler} userName={userName} />
       )}
-    </>
+    </div>
   );
 }
 

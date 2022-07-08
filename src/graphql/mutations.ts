@@ -10,6 +10,15 @@ export const createPost = /* GraphQL */ `
     createPost(input: $input, condition: $condition) {
       id
       title
+      content
+      image {
+        bucket
+        region
+        key
+      }
+      upVotes
+      downVotes
+      tags
       comments {
         items {
           id
@@ -35,6 +44,15 @@ export const updatePost = /* GraphQL */ `
     updatePost(input: $input, condition: $condition) {
       id
       title
+      content
+      image {
+        bucket
+        region
+        key
+      }
+      upVotes
+      downVotes
+      tags
       comments {
         items {
           id
@@ -60,6 +78,15 @@ export const deletePost = /* GraphQL */ `
     deletePost(input: $input, condition: $condition) {
       id
       title
+      content
+      image {
+        bucket
+        region
+        key
+      }
+      upVotes
+      downVotes
+      tags
       comments {
         items {
           id
@@ -84,9 +111,19 @@ export const createComment = /* GraphQL */ `
   ) {
     createComment(input: $input, condition: $condition) {
       id
+      content
       post {
         id
         title
+        content
+        image {
+          bucket
+          region
+          key
+        }
+        upVotes
+        downVotes
+        tags
         comments {
           nextToken
         }
@@ -94,7 +131,6 @@ export const createComment = /* GraphQL */ `
         updatedAt
         owner
       }
-      content
       createdAt
       updatedAt
       postCommentsId
@@ -109,9 +145,19 @@ export const updateComment = /* GraphQL */ `
   ) {
     updateComment(input: $input, condition: $condition) {
       id
+      content
       post {
         id
         title
+        content
+        image {
+          bucket
+          region
+          key
+        }
+        upVotes
+        downVotes
+        tags
         comments {
           nextToken
         }
@@ -119,7 +165,6 @@ export const updateComment = /* GraphQL */ `
         updatedAt
         owner
       }
-      content
       createdAt
       updatedAt
       postCommentsId
@@ -134,9 +179,19 @@ export const deleteComment = /* GraphQL */ `
   ) {
     deleteComment(input: $input, condition: $condition) {
       id
+      content
       post {
         id
         title
+        content
+        image {
+          bucket
+          region
+          key
+        }
+        upVotes
+        downVotes
+        tags
         comments {
           nextToken
         }
@@ -144,7 +199,6 @@ export const deleteComment = /* GraphQL */ `
         updatedAt
         owner
       }
-      content
       createdAt
       updatedAt
       postCommentsId

@@ -7,6 +7,15 @@ export const onCreatePost = /* GraphQL */ `
     onCreatePost(owner: $owner) {
       id
       title
+      content
+      image {
+        bucket
+        region
+        key
+      }
+      upVotes
+      downVotes
+      tags
       comments {
         items {
           id
@@ -29,6 +38,15 @@ export const onUpdatePost = /* GraphQL */ `
     onUpdatePost(owner: $owner) {
       id
       title
+      content
+      image {
+        bucket
+        region
+        key
+      }
+      upVotes
+      downVotes
+      tags
       comments {
         items {
           id
@@ -51,6 +69,15 @@ export const onDeletePost = /* GraphQL */ `
     onDeletePost(owner: $owner) {
       id
       title
+      content
+      image {
+        bucket
+        region
+        key
+      }
+      upVotes
+      downVotes
+      tags
       comments {
         items {
           id
@@ -72,9 +99,19 @@ export const onCreateComment = /* GraphQL */ `
   subscription OnCreateComment($owner: String) {
     onCreateComment(owner: $owner) {
       id
+      content
       post {
         id
         title
+        content
+        image {
+          bucket
+          region
+          key
+        }
+        upVotes
+        downVotes
+        tags
         comments {
           nextToken
         }
@@ -82,7 +119,6 @@ export const onCreateComment = /* GraphQL */ `
         updatedAt
         owner
       }
-      content
       createdAt
       updatedAt
       postCommentsId
@@ -94,9 +130,19 @@ export const onUpdateComment = /* GraphQL */ `
   subscription OnUpdateComment($owner: String) {
     onUpdateComment(owner: $owner) {
       id
+      content
       post {
         id
         title
+        content
+        image {
+          bucket
+          region
+          key
+        }
+        upVotes
+        downVotes
+        tags
         comments {
           nextToken
         }
@@ -104,7 +150,6 @@ export const onUpdateComment = /* GraphQL */ `
         updatedAt
         owner
       }
-      content
       createdAt
       updatedAt
       postCommentsId
@@ -116,9 +161,19 @@ export const onDeleteComment = /* GraphQL */ `
   subscription OnDeleteComment($owner: String) {
     onDeleteComment(owner: $owner) {
       id
+      content
       post {
         id
         title
+        content
+        image {
+          bucket
+          region
+          key
+        }
+        upVotes
+        downVotes
+        tags
         comments {
           nextToken
         }
@@ -126,7 +181,6 @@ export const onDeleteComment = /* GraphQL */ `
         updatedAt
         owner
       }
-      content
       createdAt
       updatedAt
       postCommentsId

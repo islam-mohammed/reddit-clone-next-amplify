@@ -5,10 +5,25 @@
 export type CreatePostInput = {
   id?: string | null,
   title: string,
+  content: string,
+  image?: S3ObjectInput | null,
+  upVotes?: number | null,
+  downVotes?: number | null,
+  tags?: Array< string | null > | null,
+};
+
+export type S3ObjectInput = {
+  bucket: string,
+  region: string,
+  key: string,
 };
 
 export type ModelPostConditionInput = {
   title?: ModelStringInput | null,
+  content?: ModelStringInput | null,
+  upVotes?: ModelIntInput | null,
+  downVotes?: ModelIntInput | null,
+  tags?: ModelStringInput | null,
   and?: Array< ModelPostConditionInput | null > | null,
   or?: Array< ModelPostConditionInput | null > | null,
   not?: ModelPostConditionInput | null,
@@ -54,14 +69,38 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
 export type Post = {
   __typename: "Post",
   id: string,
   title: string,
+  content: string,
+  image?: S3Object | null,
+  upVotes?: number | null,
+  downVotes?: number | null,
+  tags?: Array< string | null > | null,
   comments?: ModelCommentConnection | null,
   createdAt: string,
   updatedAt: string,
   owner?: string | null,
+};
+
+export type S3Object = {
+  __typename: "S3Object",
+  bucket: string,
+  region: string,
+  key: string,
 };
 
 export type ModelCommentConnection = {
@@ -73,8 +112,8 @@ export type ModelCommentConnection = {
 export type Comment = {
   __typename: "Comment",
   id: string,
-  post?: Post | null,
   content: string,
+  post?: Post | null,
   createdAt: string,
   updatedAt: string,
   postCommentsId?: string | null,
@@ -84,6 +123,11 @@ export type Comment = {
 export type UpdatePostInput = {
   id: string,
   title?: string | null,
+  content?: string | null,
+  image?: S3ObjectInput | null,
+  upVotes?: number | null,
+  downVotes?: number | null,
+  tags?: Array< string | null > | null,
 };
 
 export type DeletePostInput = {
@@ -133,6 +177,10 @@ export type DeleteCommentInput = {
 export type ModelPostFilterInput = {
   id?: ModelIDInput | null,
   title?: ModelStringInput | null,
+  content?: ModelStringInput | null,
+  upVotes?: ModelIntInput | null,
+  downVotes?: ModelIntInput | null,
+  tags?: ModelStringInput | null,
   and?: Array< ModelPostFilterInput | null > | null,
   or?: Array< ModelPostFilterInput | null > | null,
   not?: ModelPostFilterInput | null,
@@ -169,6 +217,16 @@ export type CreatePostMutation = {
     __typename: "Post",
     id: string,
     title: string,
+    content: string,
+    image?:  {
+      __typename: "S3Object",
+      bucket: string,
+      region: string,
+      key: string,
+    } | null,
+    upVotes?: number | null,
+    downVotes?: number | null,
+    tags?: Array< string | null > | null,
     comments?:  {
       __typename: "ModelCommentConnection",
       items:  Array< {
@@ -198,6 +256,16 @@ export type UpdatePostMutation = {
     __typename: "Post",
     id: string,
     title: string,
+    content: string,
+    image?:  {
+      __typename: "S3Object",
+      bucket: string,
+      region: string,
+      key: string,
+    } | null,
+    upVotes?: number | null,
+    downVotes?: number | null,
+    tags?: Array< string | null > | null,
     comments?:  {
       __typename: "ModelCommentConnection",
       items:  Array< {
@@ -227,6 +295,16 @@ export type DeletePostMutation = {
     __typename: "Post",
     id: string,
     title: string,
+    content: string,
+    image?:  {
+      __typename: "S3Object",
+      bucket: string,
+      region: string,
+      key: string,
+    } | null,
+    upVotes?: number | null,
+    downVotes?: number | null,
+    tags?: Array< string | null > | null,
     comments?:  {
       __typename: "ModelCommentConnection",
       items:  Array< {
@@ -255,10 +333,21 @@ export type CreateCommentMutation = {
   createComment?:  {
     __typename: "Comment",
     id: string,
+    content: string,
     post?:  {
       __typename: "Post",
       id: string,
       title: string,
+      content: string,
+      image?:  {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null,
+      upVotes?: number | null,
+      downVotes?: number | null,
+      tags?: Array< string | null > | null,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -267,7 +356,6 @@ export type CreateCommentMutation = {
       updatedAt: string,
       owner?: string | null,
     } | null,
-    content: string,
     createdAt: string,
     updatedAt: string,
     postCommentsId?: string | null,
@@ -284,10 +372,21 @@ export type UpdateCommentMutation = {
   updateComment?:  {
     __typename: "Comment",
     id: string,
+    content: string,
     post?:  {
       __typename: "Post",
       id: string,
       title: string,
+      content: string,
+      image?:  {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null,
+      upVotes?: number | null,
+      downVotes?: number | null,
+      tags?: Array< string | null > | null,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -296,7 +395,6 @@ export type UpdateCommentMutation = {
       updatedAt: string,
       owner?: string | null,
     } | null,
-    content: string,
     createdAt: string,
     updatedAt: string,
     postCommentsId?: string | null,
@@ -313,10 +411,21 @@ export type DeleteCommentMutation = {
   deleteComment?:  {
     __typename: "Comment",
     id: string,
+    content: string,
     post?:  {
       __typename: "Post",
       id: string,
       title: string,
+      content: string,
+      image?:  {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null,
+      upVotes?: number | null,
+      downVotes?: number | null,
+      tags?: Array< string | null > | null,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -325,7 +434,6 @@ export type DeleteCommentMutation = {
       updatedAt: string,
       owner?: string | null,
     } | null,
-    content: string,
     createdAt: string,
     updatedAt: string,
     postCommentsId?: string | null,
@@ -342,6 +450,16 @@ export type GetPostQuery = {
     __typename: "Post",
     id: string,
     title: string,
+    content: string,
+    image?:  {
+      __typename: "S3Object",
+      bucket: string,
+      region: string,
+      key: string,
+    } | null,
+    upVotes?: number | null,
+    downVotes?: number | null,
+    tags?: Array< string | null > | null,
     comments?:  {
       __typename: "ModelCommentConnection",
       items:  Array< {
@@ -376,6 +494,16 @@ export type ListPostsQuery = {
       __typename: "Post",
       id: string,
       title: string,
+      content: string,
+      image?:  {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null,
+      upVotes?: number | null,
+      downVotes?: number | null,
+      tags?: Array< string | null > | null,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -396,10 +524,21 @@ export type GetCommentQuery = {
   getComment?:  {
     __typename: "Comment",
     id: string,
+    content: string,
     post?:  {
       __typename: "Post",
       id: string,
       title: string,
+      content: string,
+      image?:  {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null,
+      upVotes?: number | null,
+      downVotes?: number | null,
+      tags?: Array< string | null > | null,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -408,7 +547,6 @@ export type GetCommentQuery = {
       updatedAt: string,
       owner?: string | null,
     } | null,
-    content: string,
     createdAt: string,
     updatedAt: string,
     postCommentsId?: string | null,
@@ -430,15 +568,19 @@ export type ListCommentsQuery = {
     items:  Array< {
       __typename: "Comment",
       id: string,
+      content: string,
       post?:  {
         __typename: "Post",
         id: string,
         title: string,
+        content: string,
+        upVotes?: number | null,
+        downVotes?: number | null,
+        tags?: Array< string | null > | null,
         createdAt: string,
         updatedAt: string,
         owner?: string | null,
       } | null,
-      content: string,
       createdAt: string,
       updatedAt: string,
       postCommentsId?: string | null,
@@ -457,6 +599,16 @@ export type OnCreatePostSubscription = {
     __typename: "Post",
     id: string,
     title: string,
+    content: string,
+    image?:  {
+      __typename: "S3Object",
+      bucket: string,
+      region: string,
+      key: string,
+    } | null,
+    upVotes?: number | null,
+    downVotes?: number | null,
+    tags?: Array< string | null > | null,
     comments?:  {
       __typename: "ModelCommentConnection",
       items:  Array< {
@@ -485,6 +637,16 @@ export type OnUpdatePostSubscription = {
     __typename: "Post",
     id: string,
     title: string,
+    content: string,
+    image?:  {
+      __typename: "S3Object",
+      bucket: string,
+      region: string,
+      key: string,
+    } | null,
+    upVotes?: number | null,
+    downVotes?: number | null,
+    tags?: Array< string | null > | null,
     comments?:  {
       __typename: "ModelCommentConnection",
       items:  Array< {
@@ -513,6 +675,16 @@ export type OnDeletePostSubscription = {
     __typename: "Post",
     id: string,
     title: string,
+    content: string,
+    image?:  {
+      __typename: "S3Object",
+      bucket: string,
+      region: string,
+      key: string,
+    } | null,
+    upVotes?: number | null,
+    downVotes?: number | null,
+    tags?: Array< string | null > | null,
     comments?:  {
       __typename: "ModelCommentConnection",
       items:  Array< {
@@ -540,10 +712,21 @@ export type OnCreateCommentSubscription = {
   onCreateComment?:  {
     __typename: "Comment",
     id: string,
+    content: string,
     post?:  {
       __typename: "Post",
       id: string,
       title: string,
+      content: string,
+      image?:  {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null,
+      upVotes?: number | null,
+      downVotes?: number | null,
+      tags?: Array< string | null > | null,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -552,7 +735,6 @@ export type OnCreateCommentSubscription = {
       updatedAt: string,
       owner?: string | null,
     } | null,
-    content: string,
     createdAt: string,
     updatedAt: string,
     postCommentsId?: string | null,
@@ -568,10 +750,21 @@ export type OnUpdateCommentSubscription = {
   onUpdateComment?:  {
     __typename: "Comment",
     id: string,
+    content: string,
     post?:  {
       __typename: "Post",
       id: string,
       title: string,
+      content: string,
+      image?:  {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null,
+      upVotes?: number | null,
+      downVotes?: number | null,
+      tags?: Array< string | null > | null,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -580,7 +773,6 @@ export type OnUpdateCommentSubscription = {
       updatedAt: string,
       owner?: string | null,
     } | null,
-    content: string,
     createdAt: string,
     updatedAt: string,
     postCommentsId?: string | null,
@@ -596,10 +788,21 @@ export type OnDeleteCommentSubscription = {
   onDeleteComment?:  {
     __typename: "Comment",
     id: string,
+    content: string,
     post?:  {
       __typename: "Post",
       id: string,
       title: string,
+      content: string,
+      image?:  {
+        __typename: "S3Object",
+        bucket: string,
+        region: string,
+        key: string,
+      } | null,
+      upVotes?: number | null,
+      downVotes?: number | null,
+      tags?: Array< string | null > | null,
       comments?:  {
         __typename: "ModelCommentConnection",
         nextToken?: string | null,
@@ -608,7 +811,6 @@ export type OnDeleteCommentSubscription = {
       updatedAt: string,
       owner?: string | null,
     } | null,
-    content: string,
     createdAt: string,
     updatedAt: string,
     postCommentsId?: string | null,

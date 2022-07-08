@@ -5,6 +5,11 @@ import * as React from "react";
 import { ThemeProvider } from "next-themes";
 import Layout from "../components/layout/Layout";
 import AuthProvider from "../context/AuthContext";
+import awsConfig from "../aws-exports";
+
+import { Amplify } from "aws-amplify";
+
+Amplify.configure({ ...awsConfig, ssr: true });
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (

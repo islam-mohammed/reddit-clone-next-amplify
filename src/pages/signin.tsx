@@ -9,7 +9,7 @@ export default function SignIn() {
   const router = useRouter();
   const onConfirmHandler = () => router.push("/");
   return (
-    <>
+    <div className="max-w-md m-auto bg-white p-10">
       {currentStep === "create" && (
         <SignInAccount
           onUserSignIn={(e) => {
@@ -21,6 +21,6 @@ export default function SignIn() {
       {currentStep === "confirm" && (
         <ConfirmAccount onConfirm={onConfirmHandler} userName={userName} />
       )}
-    </>
+    </div>
   );
 }

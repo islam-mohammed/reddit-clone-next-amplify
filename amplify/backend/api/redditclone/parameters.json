@@ -1,5 +1,5 @@
 {
-  "AppSyncApiName": "redditcloneapi",
+  "AppSyncApiName": "redditclone",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
   "AuthCognitoUserPoolId": {
@@ -7,5 +7,6 @@
       "authredditclone3c92fe2d",
       "Outputs.UserPoolId"
     ]
-  }
+  },
+  "AuthModeLastUpdated": "2022-07-08T01:20:09.239Z"
 }

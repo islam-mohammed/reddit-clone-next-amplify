@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import FormInput from "../form/Input";
 import Alert from "../form/Alert";
-import { Amplify, Auth } from "aws-amplify";
-import awsConfig from "../../aws-exports";
+import { Auth } from "aws-amplify";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -14,8 +13,6 @@ const schema = yup.object({
 interface IFormInputs {
   verificationCode: string;
 }
-
-Amplify.configure({ ...awsConfig, ssr: true });
 
 function ConfirmAccount({
   userName,
@@ -45,7 +42,14 @@ function ConfirmAccount({
 
   return (
     <>
-      <h1>Sigh Up</h1>
+      <div className="p-2 bg-slate-800">
+        <h3
+          className=" w-full text-center"
+          style={{ color: "#fff", margin: 0 }}
+        >
+          Confirm your account
+        </h3>
+      </div>
       {confirmErrorMessage && (
         <Alert
           type="error"
@@ -67,8 +71,9 @@ function ConfirmAccount({
             register={register}
             error={errors.verificationCode && errors.verificationCode.message}
           />
+
           <button
-            className=" mt-8 w-full inline-block px-7 py-3 bg-gray-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+            className=" mt-8 w-full inline-block px-7 py-3 bg-gray-900 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-700 hover:shadow-lg focus:bg-gray-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
             type="submit"
           >
             Confirm
