@@ -5,8 +5,7 @@ import * as yup from "yup";
 import Alert from "../../components/form/Alert";
 import FormInput from "../../components/form/Input";
 import FormText from "../../components/form/TextArea";
-import { Auth, Storage, withSSRContext } from "aws-amplify";
-import { API } from "aws-amplify";
+import { Auth, Storage, API } from "aws-amplify";
 import { createPost } from "../../graphql/mutations";
 import { CreatePostInput } from "../../API";
 import { useRouter } from "next/router";
@@ -14,6 +13,7 @@ import Spinner from "../../components/Spinner";
 import DropZone from "../../components/form/DropZone";
 import awsExports from "../../aws-exports";
 import Progress from "../../components/form/Progress";
+import { withAuthenticator } from "aws-amplify-react";
 
 const schema = yup.object({
   title: yup.string().required("Post title is required").max(120, {
@@ -32,7 +32,7 @@ type Props = {
   authenticated: boolean;
 };
 
-export default function CreatePost({ authenticated }: Props) {
+const CreatePost = ({ authenticated }: Props) => {
   const [postErrorMessage, setPostErrorMessage] = useState("");
   const [file, setFile] = useState<File>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,7 +62,14 @@ export default function CreatePost({ authenticated }: Props) {
         const filename = `/${visibility}/${identityId}/${Date.now()}-${
           file.name
         }`;
-        const upladedFile = await Storage.put(filename);
+        console.log(file.type);
+        const upladedFile = await Storage.put(filename, {
+          contentType: file.type,
+          progressCallback(progress) {
+            console.log(progress);
+            setFileUploadProgress(progress.loaded / progress.total);
+          },
+        });
 
         const newImage = {
           key: upladedFile.key,
@@ -136,32 +143,34 @@ export default function CreatePost({ authenticated }: Props) {
       </form>
     </>
   );
-}
+};
 
-export async function getServerSideProps(context) {
-  const { Auth } = withSSRContext(context);
-  try {
-    const user = await Auth.currentAuthenticatedUser();
-    console.log(user);
-    if (user) {
-      return {
-        props: {
-          authenticated: true,
-        },
-      };
-    } else {
-      console.log("should return this");
-      return {
-        redirect: {
-          destination: "/signin",
-        },
-      };
-    }
-  } catch (err) {
-    return {
-      redirect: {
-        destination: "/signin",
-      },
-    };
-  }
-}
+export default withAuthenticator(CreatePost);
+
+// export async function getServerSideProps(context) {
+//   const { Auth } = withSSRContext(context);
+//   try {
+//     const user = await Auth.currentAuthenticatedUser();
+//     console.log(user);
+//     if (user) {
+//       return {
+//         props: {
+//           authenticated: true,
+//         },
+//       };
+//     } else {
+//       console.log("should return this");
+//       return {
+//         redirect: {
+//           destination: "/signin",
+//         },
+//       };
+//     }
+//   } catch (err) {
+//     return {
+//       redirect: {
+//         destination: "/signin",
+//       },
+//     };
+//   }
+// }

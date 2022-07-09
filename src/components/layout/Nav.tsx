@@ -69,12 +69,8 @@ export default function Nav({}: Props) {
         <div className="flex items-center relative">
           {!user && (
             <div className="flex gap-2 mr-3">
-              <Link href="/signin">
-                <a>Sign In</a>
-              </Link>
-              <span>|</span>
-              <Link href="/signup">
-                <a>Sign Up</a>
+              <Link href="/profile">
+                <a>Sign In / Sign Up</a>
               </Link>
             </div>
           )}

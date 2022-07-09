@@ -1,8 +1,9 @@
 type Post
   @model
+  @key(name: "postsByOwner", fields: ["owner"], queryField: "postsByOwner")
   @auth(
     rules: [
-      { allow: owner }
+      { allow: owner, ownerField: "owner" }
       { allow: public, operations: [read] }
       { allow: private, operations: [read] }
     ]
@@ -15,6 +16,7 @@ type Post
   downVotes: Int
   tags: [String]
   comments: [Comment] @hasMany
+  owner: String
 }
 
 type Comment

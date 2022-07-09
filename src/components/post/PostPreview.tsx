@@ -15,14 +15,20 @@ export default function PostPreview({ post }: Props) {
   const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
+    console.log(post.image);
     if (post.image?.key) {
       const getImage = async () => {
-        const url = await Storage.get(post.image.key);
-        setImageUrl(url);
+        try {
+          const url = await Storage.get(post.image.key);
+          console.log(url);
+          setImageUrl(url);
+        } catch (error) {
+          console.log(error.message);
+        }
       };
       getImage();
     }
-  });
+  }, []);
 
   const handleClick = () => router.push(`/post/${post.id}`);
   return (
@@ -36,7 +42,13 @@ export default function PostPreview({ post }: Props) {
           <h3 style={{ marginTop: 0, marginLeft: 45 }}>{post.title}</h3>
           <div className="w-full">
             {imageUrl && (
-              <img src={imageUrl} width={450} height={350} className="m-auto" />
+              <Image
+                src={imageUrl}
+                width={450}
+                height={350}
+                layout="intrinsic"
+                className="m-auto"
+              />
             )}
           </div>
           <p className="p-4">{post.content}</p>
