@@ -1,8 +1,10 @@
-import { API } from "aws-amplify";
+import { withSSRContext } from "aws-amplify";
+import { useRouter } from "next/router";
 import React from "react";
 import { GetPostQuery, ListPostsQuery, Post } from "../../API";
 import CommentPreview from "../../components/post/CommentPreview";
 import PostPreview from "../../components/post/PostPreview";
+import Spinner from "../../components/Spinner";
 import * as queries from "../../graphql/queries";
 
 type Props = {
@@ -10,6 +12,11 @@ type Props = {
 };
 
 export default function PostDetails({ post }: Props) {
+  const router = useRouter();
+  if (router.isFallback) {
+    return <Spinner />;
+  }
+
   return (
     <div className="flex flex-col w-full lg:w-[700px]">
       {post && <PostPreview key={post.id} post={post} />}
@@ -25,7 +32,8 @@ export default function PostDetails({ post }: Props) {
 }
 
 export async function getStaticPaths() {
-  const results = (await API.graphql({
+  const SSR = withSSRContext();
+  const results = (await SSR.API.graphql({
     query: queries.listPosts,
   })) as { data: ListPostsQuery; errors: any[] };
 
@@ -41,7 +49,8 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const results = (await API.graphql({
+  const SSR = withSSRContext();
+  const results = (await SSR.API.graphql({
     query: queries.getPost,
     variables: { id: params.id },
   })) as { data: GetPostQuery; errors: any[] };

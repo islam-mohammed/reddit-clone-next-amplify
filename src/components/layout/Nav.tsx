@@ -1,19 +1,13 @@
 import Link from "next/link";
 import React from "react";
-import { useUser } from "../../context/AuthContext";
-import { Auth } from "aws-amplify";
-import { useRouter } from "next/router";
+
+import { useAuthenticator } from "@aws-amplify/ui-react";
 
 type Props = {};
 
 export default function Nav({}: Props) {
-  const { user, setUser } = useUser();
-  const router = useRouter();
-  const handleSignOut = () => {
-    Auth.signOut();
-    setUser(null);
-    router.push("/");
-  };
+  const { user, signOut } = useAuthenticator((context) => [context.user]);
+
   return (
     <nav className="relative w-full flex flex-wrap items-center justify-between py-3 bg-gray-900 text-gray-200 shadow-lg navbar navbar-expand-lg navbar-light">
       <div className="container-fluid w-full flex flex-wrap items-center justify-between px-6">
@@ -77,7 +71,7 @@ export default function Nav({}: Props) {
           {user && (
             <button
               type="button"
-              onClick={handleSignOut}
+              onClick={signOut}
               className="mr-4 inline-block px-6 py-2 border-2 border-white text-white font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out"
             >
               Sign out

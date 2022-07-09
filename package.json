@@ -10,9 +10,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-amplify/ui-react": "^3.0.4",
     "@hookform/resolvers": "^2.9.3",
     "aws-amplify": "^4.3.26",
-    "aws-amplify-react": "^5.1.9",
     "next": "12.2.0",
     "next-themes": "^0.2.0",
     "react": "18.2.0",

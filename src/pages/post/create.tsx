@@ -13,7 +13,7 @@ import Spinner from "../../components/Spinner";
 import DropZone from "../../components/form/DropZone";
 import awsExports from "../../aws-exports";
 import Progress from "../../components/form/Progress";
-import { withAuthenticator } from "aws-amplify-react";
+import { withAuthenticator } from "@aws-amplify/ui-react";
 
 const schema = yup.object({
   title: yup.string().required("Post title is required").max(120, {
@@ -146,31 +146,3 @@ const CreatePost = ({ authenticated }: Props) => {
 };
 
 export default withAuthenticator(CreatePost);
-
-// export async function getServerSideProps(context) {
-//   const { Auth } = withSSRContext(context);
-//   try {
-//     const user = await Auth.currentAuthenticatedUser();
-//     console.log(user);
-//     if (user) {
-//       return {
-//         props: {
-//           authenticated: true,
-//         },
-//       };
-//     } else {
-//       console.log("should return this");
-//       return {
-//         redirect: {
-//           destination: "/signin",
-//         },
-//       };
-//     }
-//   } catch (err) {
-//     return {
-//       redirect: {
-//         destination: "/signin",
-//       },
-//     };
-//   }
-// }

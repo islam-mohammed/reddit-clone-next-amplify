@@ -4,9 +4,12 @@ import "../styles/globals.scss";
 import * as React from "react";
 import { ThemeProvider } from "next-themes";
 import Layout from "../components/layout/Layout";
-import AuthProvider from "../context/AuthContext";
 import awsConfig from "../aws-exports";
 import { Amplify } from "aws-amplify";
+
+import "@aws-amplify/ui-react/styles.css";
+import { Authenticator } from "@aws-amplify/ui-react";
+
 Amplify.configure({ ...awsConfig, ssr: true });
 
 export default function MyApp({ Component, pageProps }: AppProps) {
@@ -20,11 +23,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       </Head>
 
       <ThemeProvider attribute="class">
-        <AuthProvider>
+        <Authenticator.Provider>
           <Layout>
             <Component {...pageProps} />
           </Layout>
-        </AuthProvider>
+        </Authenticator.Provider>
       </ThemeProvider>
     </>
   );
