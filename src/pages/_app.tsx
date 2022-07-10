@@ -2,13 +2,13 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import "../styles/globals.scss";
 import * as React from "react";
-import { ThemeProvider } from "next-themes";
 import Layout from "../components/layout/Layout";
 import awsConfig from "../aws-exports";
 import { Amplify } from "aws-amplify";
-
+import { ThemeProvider } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { Authenticator } from "@aws-amplify/ui-react";
+import theme from "../helpers/Theme";
 
 Amplify.configure({ ...awsConfig, ssr: true });
 
@@ -22,7 +22,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         />
       </Head>
 
-      <ThemeProvider attribute="class">
+      <ThemeProvider theme={theme}>
         <Authenticator.Provider>
           <Layout>
             <Component {...pageProps} />

@@ -1,3 +1,4 @@
+import { Loader } from "@aws-amplify/ui-react";
 import React from "react";
 
 type Props = {
@@ -5,15 +6,11 @@ type Props = {
 };
 
 export default function Progress({ progress }: Props) {
-  const progressText = `${Math.round(progress)}%`;
+  const percentage = Math.round(progress * 100);
   return (
-    <div className="w-full bg-gray-200 rounded-full">
-      <div
-        className="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-l-full"
-        style={{ width: progressText }}
-      >
-        {` ${progressText}`}
-      </div>
-    </div>
+    <>
+      <Loader percentage={percentage} isDeterminate />
+      <Loader variation="linear" percentage={percentage} isDeterminate />
+    </>
   );
 }

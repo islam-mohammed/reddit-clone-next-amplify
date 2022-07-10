@@ -1,6 +1,6 @@
 type Post
   @model
-  @key(name: "postsByOwner", fields: ["owner"], queryField: "postsByOwner")
+  @searchable
   @auth(
     rules: [
       { allow: owner, ownerField: "owner" }
@@ -16,7 +16,7 @@ type Post
   downVotes: Int
   tags: [String]
   comments: [Comment] @hasMany
-  owner: String
+  owner: String! @index(name: "byOwner", queryField: "postsByOwner")
 }
 
 type Comment

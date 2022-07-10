@@ -2,18 +2,25 @@ import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import Alert from "../../components/form/Alert";
-import FormInput from "../../components/form/Input";
-import FormText from "../../components/form/TextArea";
 import { Auth, Storage, API } from "aws-amplify";
 import { createPost } from "../../graphql/mutations";
 import { CreatePostInput } from "../../API";
 import { useRouter } from "next/router";
-import Spinner from "../../components/Spinner";
 import DropZone from "../../components/form/DropZone";
 import awsExports from "../../aws-exports";
 import Progress from "../../components/form/Progress";
-import { withAuthenticator } from "@aws-amplify/ui-react";
+import {
+  Alert,
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  TextAreaField,
+  TextField,
+  useAuthenticator,
+} from "@aws-amplify/ui-react";
+import PenIcon from "../../components/icons/Pen";
+import withCustomAuthenticator from "../../components/hoc/withCustomAuthenticator";
 
 const schema = yup.object({
   title: yup.string().required("Post title is required").max(120, {
@@ -24,19 +31,16 @@ const schema = yup.object({
 
 interface IFormInputs {
   title: string;
-  content: string;
+  content?: string;
   image: any;
 }
 
-type Props = {
-  authenticated: boolean;
-};
-
-const CreatePost = ({ authenticated }: Props) => {
+const CreatePost = () => {
   const [postErrorMessage, setPostErrorMessage] = useState("");
   const [file, setFile] = useState<File>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fileUploadProgress, setFileUploadProgress] = useState(0);
+  const { user } = useAuthenticator((context) => [context.user]);
   const router = useRouter();
 
   const {
@@ -54,6 +58,15 @@ const CreatePost = ({ authenticated }: Props) => {
         content: data.content,
         downVotes: 0,
         upVotes: 0,
+        owner: user.username,
+      };
+
+      const savePost = async () => {
+        await API.graphql({
+          query: createPost,
+          variables: { input },
+          authMode: "AMAZON_COGNITO_USER_POOLS",
+        });
       };
 
       if (file) {
@@ -62,30 +75,24 @@ const CreatePost = ({ authenticated }: Props) => {
         const filename = `/${visibility}/${identityId}/${Date.now()}-${
           file.name
         }`;
-        console.log(file.type);
-        const upladedFile = await Storage.put(filename, {
+        const upladedFile = await Storage.put(filename, file, {
           contentType: file.type,
           progressCallback(progress) {
-            console.log(progress);
             setFileUploadProgress(progress.loaded / progress.total);
           },
+          async completeCallback(event) {
+            const newImage = {
+              key: upladedFile.key,
+              bucket: awsExports.aws_user_files_s3_bucket,
+              region: awsExports.aws_user_files_s3_bucket_region,
+            };
+            input.image = newImage;
+            await savePost();
+          },
         });
-
-        const newImage = {
-          key: upladedFile.key,
-          bucket: awsExports.aws_user_files_s3_bucket,
-          region: awsExports.aws_user_files_s3_bucket_region,
-        };
-
-        input.image = newImage;
+      } else {
+        await savePost();
       }
-
-      await API.graphql({
-        query: createPost,
-        variables: { input },
-        authMode: "AMAZON_COGNITO_USER_POOLS",
-      });
-
       router.push("/");
     } catch (error) {
       console.log(error);
@@ -96,53 +103,51 @@ const CreatePost = ({ authenticated }: Props) => {
   };
 
   return (
-    <>
-      {isLoading && <Spinner />}
-      <h1>New Post</h1>
-      {postErrorMessage && (
-        <Alert
-          type="error"
-          message={postErrorMessage}
-          onDismess={() => setPostErrorMessage("")}
-          className="my-3"
-        />
-      )}
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        autoComplete="false"
-        className=" max-w-lg m-auto"
+    <form onSubmit={handleSubmit(onSubmit)} autoComplete="false">
+      <Flex
+        gap="1rem"
+        direction="column"
+        backgroundColor="white"
+        padding="large"
       >
-        <div className="flex flex-col justify-left items-center">
-          <FormInput
-            type="text"
-            name="title"
-            label="title"
-            register={register}
-            error={errors.title && errors.title.message}
-          />
-          <FormText
-            name="content"
-            label="Content"
-            rows={5}
-            register={register}
-            error={errors.content && errors.content.message}
-          />
+        <Flex direction="row">
+          <Heading level={4}>New Post</Heading>
+          <PenIcon />
+        </Flex>
+        <Divider orientation="horizontal" />
+        {postErrorMessage && (
+          <Alert variation="error">{postErrorMessage}</Alert>
+        )}
+        <TextField
+          label="Title"
+          type="text"
+          {...register("title")}
+          {...(errors.title && {
+            hasError: !!errors.title,
+            errorMessage: errors.title.message,
+          })}
+        />
+        <TextAreaField
+          label="Content"
+          {...register("content")}
+          size="small"
+          {...(errors.content && {
+            hasError: !!errors.content,
+            errorMessage: errors.content.message,
+          })}
+        />
 
-          {fileUploadProgress > 0 && <Progress progress={fileUploadProgress} />}
-          <DropZone
-            numberOfFiles={1}
-            onFileDrop={(files: File[]) => setFile(files[0])}
-          />
-          <button
-            className=" mt-8 w-full inline-block px-7 py-3 bg-gray-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-            type="submit"
-          >
-            Save
-          </button>
-        </div>
-      </form>
-    </>
+        {fileUploadProgress > 0 && <Progress progress={fileUploadProgress} />}
+        <DropZone
+          numberOfFiles={1}
+          onFileDrop={(files: File[]) => setFile(files[0])}
+        />
+        <Button variation="primary" type="submit" isLoading={isLoading}>
+          Save
+        </Button>
+      </Flex>
+    </form>
   );
 };
 
-export default withAuthenticator(CreatePost);
+export default withCustomAuthenticator(CreatePost);

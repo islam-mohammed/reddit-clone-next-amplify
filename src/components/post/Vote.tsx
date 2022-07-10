@@ -1,3 +1,4 @@
+import { Flex, Text } from "@aws-amplify/ui-react";
 import React from "react";
 import DownArrowIcon from "../icons/DownArrowIcon";
 import UpArrowIcon from "../icons/UpArrowIcon";
@@ -9,19 +10,21 @@ type Props = {
 
 export default function Vote({ voteUp, voteDown }: Props) {
   return (
-    <div className="flex py-3 lg:flex-col justify-center items-center mt-2">
-      <UpArrowIcon width="13px" className="cursor-pointer" />
-      <input
-        readOnly
-        type="text"
-        value={
-          new Intl.NumberFormat("en", { notation: "compact" }).format(
-            voteUp - voteDown,
-          ) || 0
-        }
-        className="text-center bg-transparent text-xs w-14"
-      />
-      <DownArrowIcon width="12px" className="cursor-pointer" />
-    </div>
+    <Flex
+      direction={{ large: "column" }}
+      justifyContent="center"
+      alignItems="center"
+      marginTop={{ base: "5px", large: "16px" }}
+      marginBottom={{ base: "5px", large: "0" }}
+      gap={1}
+    >
+      <UpArrowIcon width="15px" className="cursor-pointer" />
+      <Text width="fit-content" minWidth={36} textAlign="center">
+        {new Intl.NumberFormat("en", { notation: "compact" }).format(
+          voteUp - voteDown,
+        ) || 0}
+      </Text>
+      <DownArrowIcon width="15px" className="cursor-pointer" />
+    </Flex>
   );
 }

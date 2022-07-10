@@ -1,33 +1,18 @@
 import React from "react";
 
-import { Authenticator, withAuthenticator } from "@aws-amplify/ui-react";
-import { SignInHeader } from "../components/auth/SigninHeader";
-import { SignInFooter } from "../components/auth/SigninFooter";
-import { Header } from "../components/auth/Header";
-import { Footer } from "../components/auth/Footer";
+import { useAuthenticator, withAuthenticator } from "@aws-amplify/ui-react";
+import withCustomAuthenticator from "../components/hoc/withCustomAuthenticator";
 
 type Props = {};
 
 const Profile = (props: Props) => {
+  const { user, signOut } = useAuthenticator((context) => [context.user]);
+
   return (
-    <Authenticator initialState="signUp" socialProviders={["amazon", "apple"]}>
-      {({ signOut, user }) => (
-        <main>
-          <h1>Hello {user.username}</h1>
-          <button onClick={signOut}>Sign out</button>
-        </main>
-      )}
-    </Authenticator>
+    <main>
+      <h1>Hello {user.username}</h1>
+      <button onClick={signOut}>Sign out</button>
+    </main>
   );
 };
-export default withAuthenticator(Profile, {
-  socialProviders: ["facebook", "google"],
-  components: {
-    Header,
-    SignIn: {
-      Header: SignInHeader,
-      Footer: SignInFooter,
-    },
-    Footer,
-  },
-});
+export default withCustomAuthenticator(Profile);

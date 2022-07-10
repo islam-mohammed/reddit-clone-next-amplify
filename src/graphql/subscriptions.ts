@@ -27,9 +27,9 @@ export const onCreatePost = /* GraphQL */ `
         }
         nextToken
       }
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -58,9 +58,9 @@ export const onUpdatePost = /* GraphQL */ `
         }
         nextToken
       }
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -89,9 +89,9 @@ export const onDeletePost = /* GraphQL */ `
         }
         nextToken
       }
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -115,9 +115,9 @@ export const onCreateComment = /* GraphQL */ `
         comments {
           nextToken
         }
+        owner
         createdAt
         updatedAt
-        owner
       }
       createdAt
       updatedAt
@@ -146,9 +146,9 @@ export const onUpdateComment = /* GraphQL */ `
         comments {
           nextToken
         }
+        owner
         createdAt
         updatedAt
-        owner
       }
       createdAt
       updatedAt
@@ -177,9 +177,9 @@ export const onDeleteComment = /* GraphQL */ `
         comments {
           nextToken
         }
+        owner
         createdAt
         updatedAt
-        owner
       }
       createdAt
       updatedAt

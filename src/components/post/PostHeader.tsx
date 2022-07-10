@@ -1,6 +1,14 @@
+import {
+  Button,
+  Flex,
+  Image,
+  Text,
+  useAuthenticator,
+  useTheme,
+} from "@aws-amplify/ui-react";
+import { useRouter } from "next/router";
 import React from "react";
 import Moment from "react-moment";
-import Spinner from "../Spinner";
 
 type Props = {
   owner: string;
@@ -9,46 +17,51 @@ type Props = {
   className?: string;
 };
 
-export default function PostHeader({
-  owner,
-  createdAt,
-  showJoinButton = true,
-  className,
-}: Props) {
-  if (!owner) <Spinner />;
-
+export default function PostHeader({ owner, createdAt, className }: Props) {
+  const { user } = useAuthenticator((context) => [context.user]);
+  const router = useRouter();
+  const { tokens } = useTheme();
   return (
-    <div className="w-full flex flex-col">
-      <div className="w-full flex justify-between items-start p-3">
-        <div className="flex gap-1 items-start ">
-          <img
+    <Flex direction="column">
+      <Flex
+        direction="row"
+        justifyContent="space-between"
+        alignItems="start"
+        padding="12px"
+      >
+        <Flex direction="row" alignItems="start">
+          <Image
             src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
-            className="rounded-full w-8 mt-0 mb-0"
-            style={{
-              marginTop: 0,
-              marginBottom: 0,
-            }}
-            alt="Avatar"
+            borderRadius="50%"
+            width="32px"
+            alt="avatar"
           />
-          <span className="font-semibold">
-            {owner} -{" "}
-            <span className="font-normal">
+          <Flex wrap="wrap">
+            <Text fontWeight={tokens.fontWeights.bold}>{owner}</Text>
+            <Text>
+              {" "}
               created{" "}
               <Moment interval={1000} fromNow>
                 {createdAt}
               </Moment>
-            </span>
-          </span>
-        </div>
-        {showJoinButton && (
-          <button
+            </Text>
+          </Flex>
+        </Flex>
+        {!user && (
+          <Button
             type="button"
-            className="inline-block px-4 py-2 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+            variation="primary"
+            size="small"
+            borderRadius={20}
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push("/profile");
+            }}
           >
             Join
-          </button>
+          </Button>
         )}
-      </div>
-    </div>
+      </Flex>
+    </Flex>
   );
 }

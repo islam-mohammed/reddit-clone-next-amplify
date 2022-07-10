@@ -30,9 +30,9 @@ export const createPost = /* GraphQL */ `
         }
         nextToken
       }
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -64,9 +64,9 @@ export const updatePost = /* GraphQL */ `
         }
         nextToken
       }
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -98,9 +98,9 @@ export const deletePost = /* GraphQL */ `
         }
         nextToken
       }
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -127,9 +127,9 @@ export const createComment = /* GraphQL */ `
         comments {
           nextToken
         }
+        owner
         createdAt
         updatedAt
-        owner
       }
       createdAt
       updatedAt
@@ -161,9 +161,9 @@ export const updateComment = /* GraphQL */ `
         comments {
           nextToken
         }
+        owner
         createdAt
         updatedAt
-        owner
       }
       createdAt
       updatedAt
@@ -195,9 +195,9 @@ export const deleteComment = /* GraphQL */ `
         comments {
           nextToken
         }
+        owner
         createdAt
         updatedAt
-        owner
       }
       createdAt
       updatedAt

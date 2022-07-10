@@ -1,3 +1,12 @@
+import {
+  Card,
+  Flex,
+  Heading,
+  Text,
+  useAuthenticator,
+  useTheme,
+  View,
+} from "@aws-amplify/ui-react";
 import { Storage } from "aws-amplify";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -13,6 +22,8 @@ type Props = {
 export default function PostPreview({ post }: Props) {
   const router = useRouter();
   const [imageUrl, setImageUrl] = useState("");
+  const { tokens } = useTheme();
+  const { user } = useAuthenticator((context) => [context.user]);
 
   useEffect(() => {
     console.log(post.image);
@@ -20,7 +31,6 @@ export default function PostPreview({ post }: Props) {
       const getImage = async () => {
         try {
           const url = await Storage.get(post.image.key);
-          console.log(url);
           setImageUrl(url);
         } catch (error) {
           console.log(error.message);
@@ -32,31 +42,44 @@ export default function PostPreview({ post }: Props) {
 
   const handleClick = () => router.push(`/post/${post.id}`);
   return (
-    <>
-      <div className="w-full flex flex-col justify-items-start lg:flex-row-reverse  rounded-lg shadow-lg bg-white">
-        <div
-          className="w-full flex flex-col justify-start items-start cursor-pointer"
-          onClick={handleClick}
-        >
-          <PostHeader owner={post.owner} createdAt={post.createdAt} />
-          <h3 style={{ marginTop: 0, marginLeft: 45 }}>{post.title}</h3>
-          <div className="w-full">
+    <View backgroundColor={tokens.colors.background.secondary}>
+      <Card variation="elevated" padding={0}>
+        <Flex direction={{ base: "column", large: "row-reverse" }}>
+          <Flex
+            direction="column"
+            justifyContent="start"
+            width="100%"
+            style={{ cursor: "pointer" }}
+            onClick={handleClick}
+            padding="15px"
+          >
+            <PostHeader owner={post.owner} createdAt={post.createdAt} />
+            <Heading level={4}>{post.title}</Heading>
+
             {imageUrl && (
-              <Image
-                src={imageUrl}
-                width={450}
-                height={350}
-                layout="intrinsic"
-                className="m-auto"
-              />
+              <Flex direction="column" border="2px solid #f9f9f9">
+                <Image
+                  src={imageUrl}
+                  width={450}
+                  height={300}
+                  layout="responsive"
+                  className="m-auto object-contain"
+                />
+              </Flex>
             )}
-          </div>
-          <p className="p-4">{post.content}</p>
-        </div>
-        <div className="w-full lg:w-10 bg-slate-100">
-          <Vote voteDown={post.downVotes} voteUp={post.upVotes} />
-        </div>
-      </div>
-    </>
+            <Text>{post.content}</Text>
+          </Flex>
+          {user && (
+            <Flex
+              direction={{ base: "row", large: "column" }}
+              backgroundColor={tokens.colors.neutral[10]}
+              paddingLeft={{ base: "20px", large: "0" }}
+            >
+              <Vote voteDown={post.downVotes} voteUp={post.upVotes} />
+            </Flex>
+          )}
+        </Flex>
+      </Card>
+    </View>
   );
 }

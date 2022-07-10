@@ -15,6 +15,11 @@
       "auth": {
         "redditclone3c92fe2d": {}
       }
+    },
+    "api": {
+      "redditclone": {
+        "OpenSearchInstanceType": "t2.medium.elasticsearch"
+      }
     }
   }
 }

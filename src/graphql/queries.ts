@@ -27,9 +27,9 @@ export const getPost = /* GraphQL */ `
         }
         nextToken
       }
+      owner
       createdAt
       updatedAt
-      owner
     }
   }
 `;
@@ -63,11 +63,104 @@ export const listPosts = /* GraphQL */ `
         comments {
           nextToken
         }
+        owner
         createdAt
         updatedAt
-        owner
       }
       nextToken
+    }
+  }
+`;
+export const postsByOwner = /* GraphQL */ `
+  query PostsByOwner(
+    $owner: String!
+    $sortDirection: ModelSortDirection
+    $filter: ModelPostFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    postsByOwner(
+      owner: $owner
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        title
+        content
+        image {
+          bucket
+          region
+          key
+        }
+        upVotes
+        downVotes
+        tags
+        comments {
+          nextToken
+        }
+        owner
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const searchPosts = /* GraphQL */ `
+  query SearchPosts(
+    $filter: SearchablePostFilterInput
+    $sort: [SearchablePostSortInput]
+    $limit: Int
+    $nextToken: String
+    $from: Int
+    $aggregates: [SearchablePostAggregationInput]
+  ) {
+    searchPosts(
+      filter: $filter
+      sort: $sort
+      limit: $limit
+      nextToken: $nextToken
+      from: $from
+      aggregates: $aggregates
+    ) {
+      items {
+        id
+        title
+        content
+        image {
+          bucket
+          region
+          key
+        }
+        upVotes
+        downVotes
+        tags
+        comments {
+          nextToken
+        }
+        owner
+        createdAt
+        updatedAt
+      }
+      nextToken
+      total
+      aggregateItems {
+        name
+        result {
+          ... on SearchableAggregateScalarResult {
+            value
+          }
+          ... on SearchableAggregateBucketResult {
+            buckets {
+              key
+              doc_count
+            }
+          }
+        }
+      }
     }
   }
 `;
@@ -91,9 +184,9 @@ export const getComment = /* GraphQL */ `
         comments {
           nextToken
         }
+        owner
         createdAt
         updatedAt
-        owner
       }
       createdAt
       updatedAt
@@ -127,9 +220,9 @@ export const listComments = /* GraphQL */ `
           upVotes
           downVotes
           tags
+          owner
           createdAt
           updatedAt
-          owner
         }
         createdAt
         updatedAt
